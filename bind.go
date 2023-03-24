@@ -3,10 +3,20 @@ package reportbinding
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/gocarina/gocsv"
 	pdfcpu "github.com/pdfcpu/pdfcpu/pkg/api"
 )
+
+type ReportData struct {
+    PageCount   int    `csv:"PageCount"`
+    Author      string `csv:"Author"`
+    Title       string `csv:"Title"`
+    Filename    string `csv:"Filename"`
+}
+
+type ReportDatas []ReportData
 
 func NewReportDatas() (*ReportDatas, error) { // ディレクトリにある"reportData.csv"を読み込みreportDatasを作成する
     f, err := os.Open("reportData.csv")
@@ -30,18 +40,18 @@ func (r *ReportDatas)UniteReport() error { // reportDatasにあるpdfを結合�
         reportFilenames = append(reportFilenames, report.Filename)
     }
 
-    err := os.MkdirAll("UniteReport", 0755)
-    if err != nil {
-        return err
-    }
-    err = pdfcpu.MergeCreateFile(reportFilenames, "UniteReport/uniteReport.pdf", nil)
+    err := pdfcpu.MergeCreateFile(reportFilenames, "./UnitedReport/unitedReport.pdf", nil)
     if err != nil {
         return err
     }
     return nil
 }
 
-func (r *ReportDatas)AddPagenum(filename string, startPage int) error { // filenameの各ページにstartPage(>0)から始まるページ番号をふる。
+func (r *ReportDatas)GenTabeleOfContents() {
+    // to do
+}
+
+func AddPagenum(filename string, startPage int) error { // filenameの各ページにstartPage(>0)から始まるページ番号をふる。
     for i:=0; i< startPage-1; i++ {
         err := pdfcpu.InsertPagesFile(filename, "", []string{"1"}, true, nil)
         if err != nil {
@@ -64,3 +74,83 @@ func (r *ReportDatas)AddPagenum(filename string, startPage int) error { // filen
     return nil
 }
 
+func getPdfFilenames(dirnames []string) ([]string, error) {
+    files := make([]string, 0, len(dirnames))
+    for _, dirname := range dirnames {
+        file, err := filepath.Glob(dirname + "/*.pdf")
+        if err != nil {
+            return nil, err
+        }
+        if file == nil {
+            return nil, fmt.Errorf("error bindReport: %v, no pdf file", dirname)
+        }
+        if len(file) > 1 {
+            return nil, fmt.Errorf("error bindReport: %v, too many pdf files", dirname)
+        }
+        files = append(files, file[0])
+    }
+    return files, nil
+}
+
+func addBlankpage(outputfile string) error {
+    pagenum, err := pdfcpu.PageCountFile(outputfile)
+    if err != nil {
+        return err
+    }
+    for i := pagenum%4; i!=3; i++ {
+        err := pdfcpu.InsertPagesFile(outputfile, "", []string{fmt.Sprint(pagenum)}, false, nil)
+        if err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+func BindReport() error {
+    reports, err := NewReportDatas()
+    if err != nil {
+        return err
+    }
+
+    err = reports.UniteReport()
+    if err != nil {
+        return err
+    }
+
+    dirnames := []string{"./FrontCover", "./TableOfContents", "./UnitedReport", "./BackCover"}
+    files, err := getPdfFilenames(dirnames)
+    if err != nil {
+        return err
+    }
+
+    frontCoverNum, err := pdfcpu.PageCountFile(files[0])
+    if err != nil {
+        return err
+    }
+    tabeleOfContentsNum, err := pdfcpu.PageCountFile(files[1])
+    if err != nil {
+        return err
+    }
+    err = AddPagenum(files[2], frontCoverNum + tabeleOfContentsNum + 1)
+    if err != nil {
+        return err
+    }
+
+    os.MkdirAll("./BoundReport", 0755)
+    outputfile :=  "./BoundReport/boundReport.pdf"
+    err = pdfcpu.MergeCreateFile(files[0:3], outputfile, nil)
+    if err != nil {
+        return err
+    }
+
+    err = addBlankpage(outputfile)
+    if err != nil {
+        return err
+    }
+
+    err = pdfcpu.MergeAppendFile([]string{files[3]}, outputfile, nil)
+    if err != nil {
+        return err
+    }
+    return nil
+}

@@ -14,12 +14,9 @@ func GenCsv() error { // ディレクトリにある".pdf"で終わるファイ�
         return err
     }
 
-    reports := make(ReportDatas, 0, len(files))
+    reports := make([]ReportData, 0, len(files))
 
     for _, file := range files {
-        // aaa, _ := api.InfoFile(file, nil, nil)
-        // println(file)
-        // println(aaa[1], aaa[5], aaa[6])
         ctx, err := pdfcpu.ReadContextFile(file)
         if err != nil {
             return err
@@ -42,17 +39,13 @@ func GenCsv() error { // ディレクトリにある".pdf"で終わるファイ�
 
 func InitReportBinding() error {
     GenCsv()
-    err := os.MkdirAll("./Hyougi", 0755)
-    if err != nil {
-        return err
-    }
-    err = os.MkdirAll("./Mokuzi", 0755)
-    if err != nil {
-        return err
-    }
-    err = os.MkdirAll("./UraByougi", 0755)
-    if err != nil {
-        return err
+
+    dirnames := []string{"./FrontCover", "./TableOfContents", "./UnitedReport", "./BackCover"}
+    for _, dirname := range dirnames {
+        err := os.MkdirAll(dirname, 0755)
+        if err != nil {
+            return err
+        }
     }
     return nil
 }
