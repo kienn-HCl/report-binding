@@ -42,7 +42,7 @@ func (r *ReportDatas)UniteReport() error { // reportDatasにあるpdfを結合�
 }
 
 func (r *ReportDatas)AddPagenum(filename string, startPage int) error { // filenameの各ページにstartPage(>0)から始まるページ番号をふる。
-    for i:=1; i< startPage; i++ {
+    for i:=0; i< startPage-1; i++ {
         err := pdfcpu.InsertPagesFile(filename, "", []string{"1"}, true, nil)
         if err != nil {
             return err
@@ -57,7 +57,7 @@ func (r *ReportDatas)AddPagenum(filename string, startPage int) error { // filen
     if startPage < 2 {
         return nil
     }
-    err = pdfcpu.RemovePagesFile(filename, "", []string{fmt.Sprintf("1-%d", startPage)}, nil)
+    err = pdfcpu.RemovePagesFile(filename, "", []string{fmt.Sprintf("1-%d", startPage-1)}, nil)
     if err != nil {
         return err
     }
