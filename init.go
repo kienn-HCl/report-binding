@@ -9,7 +9,7 @@ import (
 )
 
 func GenCsv() error { // ディレクトリにある".pdf"で終わるファイルを読み取り"repsrtData.csv"を作成する。
-    files, err := filepath.Glob("./*.pdf")
+    files, err := filepath.Glob("*.pdf")
     if err != nil {
         return err
     }
@@ -24,7 +24,7 @@ func GenCsv() error { // ディレクトリにある".pdf"で終わるファイ�
         reports = append(reports, ReportData{ctx.PageCount, ctx.Author, ctx.Title, file})
     }
 
-    f, err := os.Create("reportData.csv")
+    f, err := os.Create(csvFile)
     if err != nil {
         return err
     }
@@ -40,7 +40,7 @@ func GenCsv() error { // ディレクトリにある".pdf"で終わるファイ�
 func InitReportBinding() error {
     GenCsv()
 
-    dirnames := []string{"./FrontCover", "./TableOfContents", "./UnitedReport", "./BackCover"}
+    dirnames := []string{frontCoverDir, tabeleOfContentsDir, unitedReportDir, backCoverDir}
     for _, dirname := range dirnames {
         err := os.MkdirAll(dirname, 0755)
         if err != nil {

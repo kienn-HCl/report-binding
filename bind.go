@@ -18,8 +18,21 @@ type ReportData struct {
 
 type ReportDatas []ReportData
 
+const (
+    csvFile = "reportData.csv"
+
+    frontCoverDir = "FrontCover"
+    tabeleOfContentsDir = "TableOfContents"
+    unitedReportDir = "UnitedReport"
+    backCoverDir = "BackCover"
+    boundReportDir = "BoundReport"
+
+    unitedReportFile = "unitedReport.pdf"
+    boundReportFile = "boundReport.pdf"
+)
+
 func NewReportDatas() (*ReportDatas, error) { // ディレクトリにある"reportData.csv"を読み込みreportDatasを作成する
-    f, err := os.Open("reportData.csv")
+    f, err := os.Open(csvFile)
     if err != nil {
         return nil, err
     }
@@ -40,7 +53,7 @@ func (r *ReportDatas)UniteReport() error { // reportDatasにあるpdfを結合�
         reportFilenames = append(reportFilenames, report.Filename)
     }
 
-    err := pdfcpu.MergeCreateFile(reportFilenames, "./UnitedReport/unitedReport.pdf", nil)
+    err := pdfcpu.MergeCreateFile(reportFilenames, filepath.Join(unitedReportDir, unitedReportFile) , nil)
     if err != nil {
         return err
     }
@@ -74,10 +87,10 @@ func AddPagenum(filename string, startPage int) error { // filenameの各ペー�
     return nil
 }
 
-func getPdfFilenames(dirnames []string) ([]string, error) {
+func getPdfFilenames(dirnames ...string) ([]string, error) {
     files := make([]string, 0, len(dirnames))
     for _, dirname := range dirnames {
-        file, err := filepath.Glob(dirname + "/*.pdf")
+        file, err := filepath.Glob(filepath.Join(dirname, "*.pdf"))
         if err != nil {
             return nil, err
         }
@@ -111,14 +124,12 @@ func BindReport() error {
     if err != nil {
         return err
     }
-
     err = reports.UniteReport()
     if err != nil {
         return err
     }
 
-    dirnames := []string{"./FrontCover", "./TableOfContents", "./UnitedReport", "./BackCover"}
-    files, err := getPdfFilenames(dirnames)
+    files, err := getPdfFilenames(frontCoverDir, tabeleOfContentsDir, unitedReportDir, backCoverDir)
     if err != nil {
         return err
     }
@@ -136,8 +147,8 @@ func BindReport() error {
         return err
     }
 
-    os.MkdirAll("./BoundReport", 0755)
-    outputfile :=  "./BoundReport/boundReport.pdf"
+    os.MkdirAll(boundReportDir, 0755)
+    outputfile := filepath.Join(boundReportDir, boundReportFile)
     err = pdfcpu.MergeCreateFile(files[0:3], outputfile, nil)
     if err != nil {
         return err
