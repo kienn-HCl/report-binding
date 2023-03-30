@@ -28,8 +28,7 @@ func addPagenum(c *cli.Context) error {
 }
 
 func genTableOfContents(c *cli.Context) error {
-    // to do
-    return nil
+    return reportbinding.GenTableOfContentsPdf(c.Float64("fontsize"), c.Int("rows"))
 }
 
 func bindReport(c *cli.Context) error {
@@ -79,6 +78,26 @@ func main () {
                 },
             },
             Action: addPagenum,
+        },
+        {
+            Name: "genTableOfContents",
+            Aliases: []string{"t"},
+            Usage: "make tableOfContents.pdf and output \"./TableOfContents\" directory",
+            Flags: []cli.Flag{
+                &cli.Float64Flag{
+                    Name: "fontsize",
+                    Aliases: []string{"f"},
+                    Usage: "fontsize",
+                    Value: 15,
+                },
+                &cli.IntFlag{
+                    Name: "rows",
+                    Aliases: []string{"r"},
+                    Usage: "rows number per page",
+                    Value: 12,
+                },
+            },
+            Action: genTableOfContents,
         },
         {
             Name: "bind report",

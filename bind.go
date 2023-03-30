@@ -28,6 +28,7 @@ const (
     boundReportDir = "BoundReport"
 
     unitedReportFile = "unitedReport.pdf"
+    tabeleOfContentsFile = "tableOfContents.pdf"
     boundReportFile = "boundReport.pdf"
 )
 
