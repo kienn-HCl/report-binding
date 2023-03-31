@@ -135,22 +135,24 @@ func BindReport() error {
         return err
     }
 
-    frontCoverNum, err := pdfcpu.PageCountFile(files[0])
-    if err != nil {
-        return err
-    }
     tabeleOfContentsNum, err := pdfcpu.PageCountFile(files[1])
     if err != nil {
         return err
     }
-    err = AddPagenum(files[2], frontCoverNum + tabeleOfContentsNum + 1)
+    err = AddPagenum(files[2], tabeleOfContentsNum + 3)
     if err != nil {
         return err
     }
 
     os.MkdirAll(boundReportDir, 0755)
     outputfile := filepath.Join(boundReportDir, boundReportFile)
-    err = pdfcpu.MergeCreateFile(files[0:3], outputfile, nil)
+
+    err = pdfcpu.InsertPagesFile(files[0], outputfile, []string{"1"}, false, nil)
+    if err != nil {
+        return err
+    }
+
+    err = pdfcpu.MergeAppendFile(files[1:3], outputfile, nil)
     if err != nil {
         return err
     }
