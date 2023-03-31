@@ -24,3 +24,9 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add font licence
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            font/IPA_Font_License_Agreement_v1.0.txt
+            font/Readme_IPAexfont00401.txt
