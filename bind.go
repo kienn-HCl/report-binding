@@ -73,7 +73,7 @@ func AddPagenum(filename string, startPage int) error { // filenameの各ペー�
         }
     }
 
-    err := pdfcpu.AddTextWatermarksFile(filename, "", nil, false, "%p / %P", "sc:1.0 abs, points: 12, pos:bc, rot:0, fillc:#000000, ma:10", nil)
+    err := pdfcpu.AddTextWatermarksFile(filename, "", nil, false, "%p", "sc:1.0 abs, points: 12, pos:bc, rot:0, fillc:#000000, ma:10", nil)
     if err != nil {
         return err
     }
