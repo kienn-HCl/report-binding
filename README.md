@@ -20,26 +20,26 @@ $ ./report-binding i
 
 
 ```shell
-$ lsd --tree
- .
-├──  article1.pdf
-├──  article2.pdf
-├──  article3.pdf
-└──  report-binding
+$ tree
+.
+├── article1.pdf
+├── article2.pdf
+├── article3.pdf
+└── report-binding
 
 $ ./report-binding i
 
-$ lsd --tree
- .
-├──  article1.pdf
-├──  article2.pdf
-├──  article3.pdf
-├──  BackCover
-├──  FrontCover
-├──  report-binding
-├──  reportData.csv
-├──  TableOfContents
-└──  UnitedReport
+$ tree
+.
+├── article1.pdf
+├── article2.pdf
+├── article3.pdf
+├── BackCover
+├── FrontCover
+├── report-binding
+├── reportData.csv
+├── TableOfContents
+└── UnitedReport
 
 ```
 
@@ -66,40 +66,40 @@ $ ./report-binding b
 とすることで`BoundReport`ディレクトリ内に製本されたpdfが作られます。なお、製本されたpdfはページ数が4の倍数となるように調整されます。
 
 ```shell
-$ lsd --tree
- .
-├──  article1.pdf
-├──  article2.pdf
-├──  article3.pdf
-├──  BackCover
-│   └──  backCover.pdf
-├──  FrontCover
-│   └──  frontCover.pdf
-├──  report-binding
-├──  reportData.csv
-├──  TableOfContents
-│   └──  tableOfContents.pdf
-└──  UnitedReport
+$ tree
+.
+├── article1.pdf
+├── article2.pdf
+├── article3.pdf
+├── BackCover
+│   └── backCover.pdf
+├── FrontCover
+│   └── frontCover.pdf
+├── report-binding
+├── reportData.csv
+├── TableOfContents
+│   └── tableOfContents.pdf
+└── UnitedReport
 
 $ ./report-binding b
 
-$ lsd --tree
- .
-├──  article1.pdf
-├──  article2.pdf
-├──  article3.pdf
-├──  BackCover
-│   └──  backCover.pdf
-├──  BoundReport
-│   └──  boundReport.pdf
-├──  FrontCover
-│   └──  frontCover.pdf
-├──  report-binding
-├──  reportData.csv
-├──  TableOfContents
-│   └──  tableOfContents.pdf
-└──  UnitedReport
-    └──  unitedReport.pdf
+$ tree
+.
+├── article1.pdf
+├── article2.pdf
+├── article3.pdf
+├── BackCover
+│   └── backCover.pdf
+├── BoundReport
+│   └── boundReport.pdf
+├── FrontCover
+│   └── frontCover.pdf
+├── report-binding
+├── reportData.csv
+├── TableOfContents
+│   └── tableOfContents.pdf
+└── UnitedReport
+    └── unitedReport.pdf
 ```
 
 ### 目次生成機能
