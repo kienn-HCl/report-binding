@@ -26,7 +26,7 @@ func genTitles(pdf *gopdf.GoPdf, pdfWidth, fontSize float64, rowsLimit int) erro
         return err
     }
     reportsNum := len(*reports)
-    titlesWidth := 0.8*pdfWidth - 1.4*fontSize
+    titlesWidth := 0.8*pdfWidth - 1.5*fontSize
     pageNum := 4 + (reportsNum-1) / rowsLimit
     dotSize := 1.3
     pdf.SetLineWidth(dotSize)
