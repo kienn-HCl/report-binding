@@ -59,7 +59,16 @@ func genTitles(pdf *gopdf.GoPdf, pdfWidth, fontSize float64, rowsLimit int) erro
         pageNum += (*reports)[i].PageCount
 
         pdf.SetXY(0.1*pdfWidth, pdf.GetY()+1.5*fontSize)
-        pdf.CellWithOption(&gopdf.Rect{W: 0.8*pdfWidth, H: fontSize}, (*reports)[i].Author, gopdf.CellOption{Align: gopdf.Right, Float: gopdf.Bottom})
+        //pdf.MultiCellWithOption(&gopdf.Rect{W: 0.8*pdfWidth, H: pdfWidth}, (*reports)[i].Author, gopdf.CellOption{Align: gopdf.Right, Float: gopdf.Bottom})
+        strs, err = pdf.SplitText((*reports)[i].Author, 0.8*pdfWidth)
+        if err!=nil {
+            return err
+        }
+        for i := 0; i < len(strs)-1; i++ {
+            pdf.CellWithOption(&gopdf.Rect{W: 0.8*pdfWidth, H: fontSize},strs[i], gopdf.CellOption{Align: gopdf.Right, Float: gopdf.Bottom})
+            pdf.SetY(pdf.GetY()+fontSize)
+        }
+        pdf.CellWithOption(&gopdf.Rect{W: 0.8*pdfWidth, H: fontSize},strs[len(strs)-1], gopdf.CellOption{Align: gopdf.Right, Float: gopdf.Bottom})
         pdf.SetY(pdf.GetY()+0.5*fontSize)
     }
 
